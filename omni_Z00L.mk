@@ -13,12 +13,34 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
+# Release name
+PRODUCT_RELEASE_NAME := Z00L
 
-# Sample: This is where we'd set a backup provider if we had one
-# $(call inherit-product, device/sample/products/backup_overlay.mk)
+$(call inherit-product, build/target/product/embedded.mk)
 
-# Inherit from the common Open Source product configuration
-$(call inherit-product, $(SRC_TARGET_DIR)/product/aosp_base_telephony.mk)
+# Inherit from our custom product configuration
+$(call inherit-product, vendor/omni/config/common.mk)
+
+# Inherit language packages
+$(call inherit-product, $(SRC_TARGET_DIR)/product/languages_full.mk)
+
+# Charger
+PRODUCT_PACKAGES += \
+    charger_res_images \
+    charger
+
+# Define time zone data path
+ifneq ($(wildcard bionic/libc/zoneinfo),)
+    TZDATAPATH := bionic/libc/zoneinfo
+else ifneq ($(wildcard system/timezone),)
+    TZDATAPATH := system/timezone/output_data/iana
+endif
+
+# Time Zone data for Recovery
+ifdef TZDATAPATH
+PRODUCT_COPY_FILES += \
+    $(TZDATAPATH)/tzdata:recovery/root/system/usr/share/zoneinfo/tzdata
+endif
 
 PRODUCT_NAME := omni_Z00L
 PRODUCT_DEVICE := Z00L
