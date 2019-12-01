@@ -21,26 +21,9 @@ $(call inherit-product, build/target/product/embedded.mk)
 # Inherit from our custom product configuration
 $(call inherit-product, vendor/omni/config/common.mk)
 
-# Inherit language packages
-$(call inherit-product, $(SRC_TARGET_DIR)/product/languages_full.mk)
-
-# Charger
-PRODUCT_PACKAGES += \
-    charger_res_images \
-    charger
-
-# Define time zone data path
-ifneq ($(wildcard bionic/libc/zoneinfo),)
-    TZDATAPATH := bionic/libc/zoneinfo
-else ifneq ($(wildcard system/timezone),)
-    TZDATAPATH := system/timezone/output_data/iana
-endif
-
-# Time Zone data for Recovery
-ifdef TZDATAPATH
+# Time Zone data for recovery
 PRODUCT_COPY_FILES += \
-    $(TZDATAPATH)/tzdata:recovery/root/system/usr/share/zoneinfo/tzdata
-endif
+    system/timezone/output_data/iana/tzdata:recovery/root/system/usr/share/zoneinfo/tzdata
 
 PRODUCT_NAME := omni_Z00L
 PRODUCT_DEVICE := Z00L
